@@ -1,0 +1,8 @@
+MongoAdmin allows you to easily manage your data.
+<br/>
+Select the MongoMapper model you want to admin : 
+<ul>
+  <% @klasses.each do |klass| %>
+    <li><%= link_to klass, :action => 'show', :id => klass %></li>
+  <% end %>
+</ul>

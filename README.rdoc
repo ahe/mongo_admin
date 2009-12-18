@@ -1,0 +1,38 @@
+= mongo_admin
+
+mongo_admin is a Rails plugin for MongoMapper, it allows you to manage your data very easily.
+
+A live demo is available at http://mongo_admin.2dconcept.com
+
+mongo_admin will automatically detect your models and generate a web interface with the following features :
+
+- CRUD operations (create-read-update-delete);
+- Master-details for :many associations;
+- Sorting;
+- Pagination;
+- Search.
+
+= Installation
+
+mongo_admin uses jquery datagrids to display data, you need to install this plugin first :
+
+  $ ./script/plugin install git://github.com/ahe/2dc_jqgrid.git
+  $ ./script/plugin install git://github.com/ahe/mongo_admin.git  
+
+= Customization
+
+You can overwrite the following view to customize the design or add your own features :
+
+  - layouts/mongo_admin.html.erb
+  - mongo_admin/index.html.erb
+  - mongo_admin/show.html.erb
+
+
+= Credits
+
+mongo_admin is inspired by admin_data for ActiveRecord (http://github.com/neerajdotname/admin_data) by Neeraj Singh.
+
+Copyright (c) 2009 Anthony Heukmes, released under the MIT license
+
+My Rails blog : http://2dconcept.com
+My Twitter account : http://twitter.com/2dc

@@ -1,0 +1,35 @@
+<html>
+  <head>    
+    <%= jqgrid_stylesheets %> 
+    <%= jqgrid_javascripts %>
+    <style type="text/css">
+      body, p, ol, ul, td {
+        font-family: verdana, arial, helvetica, sans-serif;
+        font-size:   13px;
+      }
+    </style>    
+  </head>
+  <body>
+    <select id="select_model">
+      <option value="" selected="selected">-- Choose a model --</option>
+      <% $mongo_admin_klasses.each do |klass| %>
+        <% if params[:id] == klass.to_s %>
+          <option value="<%= klass %>" selected="selected"><%= klass %></option>
+        <% else %>
+          <option value="<%= klass %>"><%= klass %></option>
+        <% end %>
+      <% end %>
+    </select>
+    <br/>
+    <br/>
+    <%= yield %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("#select_model").change(function() {
+          if($(this).val() != '')
+            window.location = '/mongo_admin/show/'+$(this).val();
+        });
+      });
+    </script>
+  </body>
+</html>

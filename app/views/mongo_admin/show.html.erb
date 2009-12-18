@@ -1,0 +1,49 @@
+<%= jqgrid("#{@klass.to_s.pluralize}", "records", "/mongo_admin/show/#{@klass.to_s}",
+	generate_grid_columns(@klass),
+	{ :autowidth => true, :add => true, :edit => true, :delete => true, :edit_url => "/mongo_admin/post_data/#{@klass.to_s}",
+	  :selection_handler => "handleSelection", :direct_selection => true }
+) %>
+<br/>
+
+<% get_many_associations(@klass).each do |assoc| %>
+  <% options = { :autowidth => true, :add => true, :edit => true, :delete => true, :edit_url => "/mongo_admin/post_data/#{assoc.singularize.camelcase}" } %>
+  <% if !assoc.singularize.camelcase.constantize.include?(MongoMapper::Document) %>
+    <% options[:search] = false %>
+    <% options[:rows_per_page] = 100 %>
+  <% end %>
+  <%= jqgrid(assoc.camelcase, assoc, "/mongo_admin/associations/#{assoc.singularize.camelcase}",
+  	generate_grid_columns(assoc.singularize.camelcase.constantize, @klass),
+  	options
+  ) %>
+  <% if !assoc.singularize.camelcase.constantize.include?(MongoMapper::Document) %>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        // Hide the pager if is is an EmbeddedDocument (pagination disabled)
+        $('#<%= assoc %>_pager_center').hide();
+      });
+    </script>
+  <%  end %>
+  <br/>
+<% end %>
+
+<script type="text/javascript">
+  var associations = [<%= get_many_associations(@klass).map{|assoc| "'#{assoc}'"}.join(',') %>];
+  var klasses = [<%= get_many_associations(@klass).map{|assoc| "'#{assoc.singularize.camelcase}'"}.join(',') %>];
+  function handleSelection(id) {
+    // Set the data URLs for each details grid
+    jQuery.each(associations, function(i, val) {
+      jQuery("#"+val).setGridParam({url:"/mongo_admin/associations/" + klasses[i] + "?q=1&parent=<%= @klass %>&parent_id=" + id, page:1})
+      .setCaption(val + " : " + id)
+      .trigger('reloadGrid');
+      jQuery("#"+val).setGridParam({editurl:"/mongo_admin/post_assoc_data/" + klasses[i] + "?parent=<%= @klass %>&parent_id=" + id})
+    });
+  }
+  
+  $(document).ready(function() {
+    // Replace date textfields by datepickers
+    var dateFields = [<%= get_date_fields(@klass) %>];
+    jQuery.each(dateFields, function(i, field) {
+      $("#"+field).datepicker({dateFormat:"yy-mm-dd"});
+    });
+  });
+</script>
